@@ -17,6 +17,12 @@ mongoose
     useFindAndModify: true,
     useUnifiedTopology: true,
     useNewUrlParser: true,
+    server: {
+      socketOptions: { keepAlive: 300000, connectTimeoutMS: 30000 },
+    },
+    replset: {
+      socketOptions: { keepAlive: 300000, connectTimeoutMS: 30000 },
+    },
   })
   .then(() => console.log('DB connection successful!'));
 

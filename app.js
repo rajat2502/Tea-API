@@ -20,6 +20,8 @@ app.use('/uploads', express.static('./uploads'));
 app.use(express.json());
 
 // Routes
+app.route('/').get((req, res) => res.sendFile(process.cwd() + '/index.html'));
+
 app.use('/api/tea', teaRouter);
 
 module.exports = app;
