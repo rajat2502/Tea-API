@@ -5,6 +5,9 @@ const app = express();
 
 // Middlewares
 
+// Make uploads folder static
+app.use('/uploads', express.static('./uploads'));
+
 // Body parser middleware
 app.use(express.json());
 

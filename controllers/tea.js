@@ -1,5 +1,17 @@
+const multer = require('multer');
 const Tea = require('../models/tea');
-const { findOne } = require('../models/tea');
+
+// for uploading the image
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, './uploads');
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.originalname);
+  },
+});
+
+exports.uploadImg = multer({ storage }).single('image');
 
 // Get All Tea
 exports.getAllTea = async (req, res) => {
@@ -13,7 +25,7 @@ exports.addTea = async (req, res) => {
   let tea = await Tea.findOne({ name: req.body.name });
 
   if (!tea) {
-    tea = await Tea.create(req.body);
+    tea = await Tea.create({ ...req.body, image: req.file.path });
     res.status(201).json({ status: 'success', data: tea });
   } else res.json({ msg: 'Tea already exists!' });
 };

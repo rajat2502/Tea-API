@@ -6,7 +6,7 @@ const router = express.Router();
 router
   .route('/')
   .get(teaController.getAllTea)
-  .post(teaController.addTea)
+  .post(teaController.uploadImg, teaController.addTea)
   .delete(teaController.deleteAllTea);
 
 router
