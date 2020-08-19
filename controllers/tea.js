@@ -1,29 +1,66 @@
+const Tea = require('../models/tea');
+const { findOne } = require('../models/tea');
+
 // Get All Tea
-exports.getAllTea = (req, res, next) => {
-  res.json({ msg: 'Get all tea' });
+exports.getAllTea = async (req, res) => {
+  const data = await Tea.find();
+
+  res.json({ status: 'success', results: data.length, data });
 };
 
 // Create a new Tea
-exports.addTea = (req, res, next) => {
-  res.json({ msg: 'New Tea Created!' });
+exports.addTea = async (req, res) => {
+  let tea = await Tea.findOne({ name: req.body.name });
+
+  if (!tea) {
+    tea = await Tea.create(req.body);
+    res.status(201).json({ status: 'success', data: tea });
+  } else res.json({ msg: 'Tea already exists!' });
 };
 
 // Delete all Tea
-exports.deleteAllTea = (req, res, next) => {
-  res.json({ msg: 'Delete all tea' });
+exports.deleteAllTea = async (req, res) => {
+  await Tea.deleteMany();
+
+  res.json({ status: 'success', msg: 'All Tea Deleted!' });
 };
 
 // Get one Tea
-exports.getOneTea = (req, res, next) => {
-  res.json({ msg: 'Get one Tea' });
+exports.getOneTea = async (req, res) => {
+  const { name } = req.params;
+
+  const data = await Tea.findOne({ name });
+  if (!data) res.json({ msg: "Tea doesn't exists!" });
+  else {
+    res.json({ status: 'success', data });
+  }
 };
 
 // Add new comment
-exports.addNewComment = (req, res, next) => {
-  res.json({ msg: 'Add new comment' });
+exports.addNewComment = async (req, res) => {
+  const { name } = req.params;
+  const comment = {
+    text: req.body.comment,
+    date: new Date().toISOString(),
+  };
+  const tea = await Tea.findOne({ name });
+
+  if (!tea) res.json({ msg: "Tea doesn't exists!" });
+  else {
+    tea.comments.push(comment);
+    await tea.save();
+
+    res.json({ status: 'success', data: tea });
+  }
 };
 
 // Delete one tea
-exports.deleteOneTea = (req, res, next) => {
-  res.json({ msg: 'Delete one tea' });
+exports.deleteOneTea = async (req, res) => {
+  const { name } = req.params;
+
+  const data = await Tea.deleteOne({ name });
+  if (!data) res.json({ msg: "Tea doesn't exists!" });
+  else {
+    res.status(204).json({ status: 'success', msg: 'Tea deleted!' });
+  }
 };
